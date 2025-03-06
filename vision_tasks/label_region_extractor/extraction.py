@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from circle_detector import *
 
 # Open the camera
 cap = cv2.VideoCapture(0)
@@ -78,8 +79,11 @@ while True:
         if left_mask.any() and right_mask.any():
             final_contours.append(contour)
 
-    # Draw the final filtered contours
-    cv2.drawContours(frame, final_contours, -1, (0, 0, 255), 2)
+    # find circles in the filtered contours
+    for contour in final_contours:
+        circle = detect_largest_circle(frame, contour)
+        if circle:
+            cv2.circle(frame, (circle[0], circle[1]), circle[2], (0, 255, 0), 2)  # draw the biggest circle
 
     # Display the result
     cv2.imshow('Filtered Contours', frame)
